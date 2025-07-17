@@ -46,16 +46,16 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
   let lineClass = 'bg-gray-200';
   
   if (isCompleted) {
-    stageClass = 'border-2 border-primary bg-primary text-white shadow-sm';
-    textClass = 'text-primary font-medium';
-    lineClass = 'bg-primary';
+    stageClass = 'border-2 border-[#0f7969] bg-[#0f7969] text-white shadow-sm';
+    textClass = 'text-[#0f7969] font-medium';
+    lineClass = 'bg-[#0f7969]';
   } else if (isActive) {
     stageClass = `border-2 ${stageColors[stage as keyof typeof stageColors]} shadow-md`;
-    textClass = 'text-foreground font-semibold';
-    lineClass = 'bg-primary';
+    textClass = 'text-[#16161d] font-semibold';
+    lineClass = 'bg-[#0f7969]';
   } else if (isNextStage) {
-    stageClass = 'border-2 border-primary bg-primary/5 text-primary glow-primary animate-pulse-glow cursor-pointer hover:bg-primary/10';
-    textClass = 'text-primary font-medium';
+    stageClass = 'border-2 border-[#0f7969] bg-[#0f7969]/5 text-[#0f7969] cursor-pointer hover:bg-[#0f7969]/10';
+    textClass = 'text-[#0f7969] font-medium';
   }
 
   return (
@@ -76,7 +76,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
         <h4 className={`text-sm font-medium ${textClass} leading-tight mb-1`}>
           {stage}
         </h4>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-gray-500">
           {isCompleted ? 'Completed' : isActive ? 'Current' : isNextStage ? 'Next' : 'Pending'}
         </p>
       </div>

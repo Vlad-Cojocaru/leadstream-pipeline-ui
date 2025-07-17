@@ -38,13 +38,13 @@ const stages = [
 ];
 
 const stageStyles = {
-  'New Lead': 'stage-new',
-  'Contacted': 'stage-contacted',
-  'Follow-Up': 'stage-followup',
-  'Proposal Sent': 'stage-proposal',
-  'Sold': 'stage-sold',
-  'In Progress': 'stage-progress',
-  'Completed': 'stage-completed'
+  'New Lead': 'bg-blue-50 text-blue-700 border-blue-200',
+  'Contacted': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Follow-Up': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Proposal Sent': 'bg-green-50 text-green-700 border-green-200',
+  'Sold': 'bg-teal-50 text-teal-700 border-teal-200',
+  'In Progress': 'bg-red-50 text-red-700 border-red-200',
+  'Completed': 'bg-emerald-50 text-emerald-700 border-emerald-200'
 };
 
 export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
@@ -59,34 +59,34 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-card border-b border-border px-4 py-6 shadow-sm">
+      <div className="bg-white border-b border-gray-200 px-4 py-6 shadow-sm">
         <div className="flex items-center gap-3">
           <img 
             src="/lovable-uploads/21ca0443-32f3-4f4b-a21c-bec7c180b4f7.png" 
             alt="CurateFlow Logo" 
             className="w-8 h-8"
           />
-          <h1 className="text-2xl font-brand text-foreground">Lead Stream Pro</h1>
+          <h1 className="text-2xl font-brand text-[#16161d]">Lead Stream Pro</h1>
         </div>
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-muted-foreground">Manage your pipeline efficiently</p>
-          <Badge variant="outline" className="border-primary text-primary bg-primary/5">
+          <p className="text-gray-600">Manage your pipeline efficiently</p>
+          <Badge variant="outline" className="border-[#0f7969] text-[#0f7969] bg-[#0f7969]/5">
             {filteredLeads.length} {selectedStage === 'all' ? 'Total' : selectedStage} Leads
           </Badge>
         </div>
       </div>
 
       {/* Filter Section */}
-      <div className="p-4 bg-card border-b border-border">
+      <div className="p-4 bg-white border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <Filter className="w-4 h-4 text-muted-foreground" />
+          <Filter className="w-4 h-4 text-gray-500" />
           <Select value={selectedStage} onValueChange={setSelectedStage}>
-            <SelectTrigger className="w-full max-w-xs">
+            <SelectTrigger className="w-full max-w-xs bg-white border-gray-200">
               <SelectValue placeholder="Filter by stage" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="all">All Stages ({leads.length})</SelectItem>
               {stages.map((stage) => (
                 <SelectItem key={stage} value={stage}>
@@ -99,10 +99,10 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
       </div>
       
       {/* Lead List */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-3 bg-white">
         {filteredLeads.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">
+            <p className="text-gray-500">
               {selectedStage === 'all' ? 'No leads found' : `No leads in ${selectedStage} stage`}
             </p>
           </div>
@@ -110,14 +110,14 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
           filteredLeads.map((lead) => (
             <Card 
               key={lead.id}
-              className="bg-card border border-border hover:border-primary hover:shadow-md transition-all duration-200 cursor-pointer group"
+              className="bg-white border border-gray-200 hover:border-[#0f7969] hover:shadow-md transition-all duration-200 cursor-pointer group"
               onClick={() => onLeadSelect(lead)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3">
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                      <h3 className="text-lg font-semibold text-[#16161d] group-hover:text-[#0f7969] transition-colors truncate">
                         {lead.name}
                       </h3>
                       <Badge 
@@ -128,11 +128,11 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Phone className="w-4 h-4 shrink-0" />
                         <span className="truncate">{lead.phone}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Mail className="w-4 h-4 shrink-0" />
                         <span className="truncate">{lead.email}</span>
                       </div>
@@ -140,14 +140,14 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect }) => {
                     
                     {lead.offerType && (
                       <div className="mt-3">
-                        <span className="text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded-md font-medium">
+                        <span className="text-xs text-[#0f7969] bg-[#0f7969]/10 border border-[#0f7969]/20 px-2 py-1 rounded-md font-medium">
                           {lead.offerType}
                         </span>
                       </div>
                     )}
                   </div>
                   
-                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 ml-4" />
+                  <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-[#0f7969] transition-colors shrink-0 ml-4" />
                 </div>
               </CardContent>
             </Card>

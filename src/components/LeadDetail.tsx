@@ -34,13 +34,13 @@ const stages = [
 ];
 
 const stageStyles = {
-  'New Lead': 'stage-new',
-  'Contacted': 'stage-contacted',
-  'Follow-Up': 'stage-followup',
-  'Proposal Sent': 'stage-proposal',
-  'Sold': 'stage-sold',
-  'In Progress': 'stage-progress',
-  'Completed': 'stage-completed'
+  'New Lead': 'bg-blue-50 text-blue-700 border-blue-200',
+  'Contacted': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Follow-Up': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Proposal Sent': 'bg-green-50 text-green-700 border-green-200',
+  'Sold': 'bg-teal-50 text-teal-700 border-teal-200',
+  'In Progress': 'bg-red-50 text-red-700 border-red-200',
+  'Completed': 'bg-emerald-50 text-emerald-700 border-emerald-200'
 };
 
 export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpdate }) => {
@@ -77,15 +77,15 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
   const canMoveToNext = lead.stageIndex < stages.length - 1;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-card border-b border-border px-4 py-4 shadow-sm">
+      <div className="bg-white border-b border-gray-200 px-4 py-4 shadow-sm">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-foreground hover:text-primary hover:bg-primary/10"
+            className="text-[#16161d] hover:text-[#0f7969] hover:bg-[#0f7969]/10"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -95,16 +95,16 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
               alt="CurateFlow Logo" 
               className="w-6 h-6"
             />
-            <h1 className="text-xl font-brand text-foreground">Lead Details</h1>
+            <h1 className="text-xl font-brand text-[#16161d]">Lead Details</h1>
           </div>
         </div>
       </div>
 
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 bg-white">
         {/* Lead Info Card */}
-        <Card className="bg-card border border-border shadow-sm">
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-foreground flex items-center justify-between text-lg">
+            <CardTitle className="text-[#16161d] flex items-center justify-between text-lg">
               {lead.name}
               <Badge className={`${stageStyles[lead.currentStage as keyof typeof stageStyles]} border font-medium`}>
                 {lead.currentStage}
@@ -113,29 +113,29 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-gray-600">
                 <Phone className="w-4 h-4" />
                 <span className="text-sm">{lead.phone}</span>
               </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-gray-600">
                 <Mail className="w-4 h-4" />
                 <span className="text-sm">{lead.email}</span>
               </div>
             </div>
             
             {lead.offerType && (
-              <div className="flex items-center gap-3 pt-2 border-t border-border">
-                <FileText className="w-4 h-4 text-primary" />
-                <span className="text-sm text-primary font-medium">{lead.offerType}</span>
+              <div className="flex items-center gap-3 pt-2 border-t border-gray-200">
+                <FileText className="w-4 h-4 text-[#0f7969]" />
+                <span className="text-sm text-[#0f7969] font-medium">{lead.offerType}</span>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Pipeline Visualization */}
-        <Card className="bg-card border border-border shadow-sm">
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-foreground text-lg">Lead Pipeline</CardTitle>
+            <CardTitle className="text-[#16161d] text-lg">Lead Pipeline</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6 mb-6">
@@ -153,11 +153,11 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
 
             {/* Action Button */}
             {canMoveToNext && (
-              <div className="text-center pt-4 border-t border-border">
+              <div className="text-center pt-4 border-t border-gray-200">
                 <Button
                   onClick={() => handleStageUpdate(nextStageIndex)}
                   disabled={isUpdating}
-                  className="bg-primary hover:bg-primary/90 text-white border-primary glow-primary font-medium px-6 py-2"
+                  className="bg-[#0f7969] hover:bg-[#0f7969]/90 text-white border-[#0f7969] font-medium px-6 py-2"
                 >
                   {isUpdating ? (
                     "Updating..."
@@ -172,7 +172,7 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
             )}
 
             {lead.stageIndex === stages.length - 1 && (
-              <div className="text-center pt-4 border-t border-border">
+              <div className="text-center pt-4 border-t border-gray-200">
                 <Badge className="bg-emerald-500 text-white text-base py-2 px-4 border-emerald-500">
                   🎉 Lead Completed!
                 </Badge>
