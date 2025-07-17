@@ -33,6 +33,16 @@ const stages = [
   'Completed'
 ];
 
+const stageStyles = {
+  'New Lead': 'stage-new',
+  'Contacted': 'stage-contacted',
+  'Follow-Up': 'stage-followup',
+  'Proposal Sent': 'stage-proposal',
+  'Sold': 'stage-sold',
+  'In Progress': 'stage-progress',
+  'Completed': 'stage-completed'
+};
+
 export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpdate }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
@@ -69,13 +79,13 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b border-border px-4 py-4">
+      <div className="bg-card border-b border-border px-4 py-4 shadow-sm">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-foreground hover:text-accent hover:bg-accent/10"
+            className="text-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -92,11 +102,11 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
 
       <div className="p-4 space-y-6">
         {/* Lead Info Card */}
-        <Card className="bg-white border border-border shadow-sm">
+        <Card className="bg-card border border-border shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-foreground flex items-center justify-between text-lg">
               {lead.name}
-              <Badge className="bg-primary text-white border-primary">
+              <Badge className={`${stageStyles[lead.currentStage as keyof typeof stageStyles]} border font-medium`}>
                 {lead.currentStage}
               </Badge>
             </CardTitle>
@@ -123,12 +133,12 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
         </Card>
 
         {/* Pipeline Visualization */}
-        <Card className="bg-white border border-border shadow-sm">
+        <Card className="bg-card border border-border shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-foreground text-lg">Lead Pipeline</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-between items-start mb-8 overflow-x-auto pb-4 gap-2 relative">
+            <div className="space-y-6 mb-6">
               {stages.map((stage, index) => (
                 <PipelineStage
                   key={stage}
@@ -143,11 +153,11 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
 
             {/* Action Button */}
             {canMoveToNext && (
-              <div className="text-center">
+              <div className="text-center pt-4 border-t border-border">
                 <Button
                   onClick={() => handleStageUpdate(nextStageIndex)}
                   disabled={isUpdating}
-                  className="bg-accent hover:bg-accent/90 text-white border-accent glow-accent font-medium px-6 py-2"
+                  className="bg-primary hover:bg-primary/90 text-white border-primary glow-primary font-medium px-6 py-2"
                 >
                   {isUpdating ? (
                     "Updating..."
@@ -162,7 +172,7 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
             )}
 
             {lead.stageIndex === stages.length - 1 && (
-              <div className="text-center">
+              <div className="text-center pt-4 border-t border-border">
                 <Badge className="bg-emerald-500 text-white text-base py-2 px-4 border-emerald-500">
                   🎉 Lead Completed!
                 </Badge>

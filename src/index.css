@@ -4,44 +4,47 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Lead Stream Pro Design System */
+/* Lead Stream Pro Design System - Housecall Pro Inspired */
 @layer base {
   :root {
-    --background: 255 255 255; /* #ffffff */
-    --foreground: 51 51 51; /* #333333 */
+    --background: 248 250 252; /* #f8fafc - light gray background */
+    --foreground: 15 23 42; /* #0f172a - dark slate text */
 
-    --card: 255 255 255;
-    --card-foreground: 51 51 51;
+    --card: 255 255 255; /* #ffffff - white cards */
+    --card-foreground: 15 23 42;
 
     --popover: 255 255 255;
-    --popover-foreground: 51 51 51;
+    --popover-foreground: 15 23 42;
 
-    --primary: 205 19 73; /* #CD1349 */
+    --primary: 15 121 105; /* #0f7969 - teal primary */
     --primary-foreground: 255 255 255;
 
-    --secondary: 248 250 252; /* #f8fafc */
-    --secondary-foreground: 51 51 51;
+    --secondary: 241 245 249; /* #f1f5f9 - very light gray */
+    --secondary-foreground: 51 65 85; /* #334155 */
 
-    --muted: 248 250 252;
-    --muted-foreground: 107 114 128; /* #6b7280 */
+    --muted: 248 250 252; /* #f8fafc */
+    --muted-foreground: 100 116 139; /* #64748b */
 
-    --accent: 15 121 105; /* #0f7969 */
+    --accent: 15 121 105; /* #0f7969 - teal accent */
     --accent-foreground: 255 255 255;
 
-    --destructive: 239 68 68;
+    --destructive: 239 68 68; /* #ef4444 */
     --destructive-foreground: 255 255 255;
 
-    --border: 229 231 235; /* #e5e7eb */
-    --input: 243 244 246; /* #f3f4f6 */
+    --border: 226 232 240; /* #e2e8f0 - light border */
+    --input: 248 250 252; /* #f8fafc */
     --ring: 15 121 105; /* #0f7969 */
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Custom Lead Stream Pro Colors */
-    --accent-teal: 15 121 105; /* #0f7969 */
-    --accent-red: 205 19 73; /* #CD1349 */
-    --success: 34 197 94; /* #22c55e */
-    --warning: 251 146 60; /* #fb923c */
+    /* Pipeline stage colors - Housecall Pro inspired */
+    --stage-new: 59 130 246; /* #3b82f6 - blue */
+    --stage-contacted: 245 158 11; /* #f59e0b - amber */
+    --stage-followup: 168 85 247; /* #a855f7 - purple */
+    --stage-proposal: 34 197 94; /* #22c55e - green */
+    --stage-sold: 15 121 105; /* #0f7969 - teal */
+    --stage-progress: 205 19 73; /* #cd1349 - red */
+    --stage-completed: 34 197 94; /* #22c55e - green */
   }
 }
 
@@ -55,22 +58,51 @@
   }
 }
 
+/* Pipeline stage specific styles */
+.stage-new {
+  @apply bg-blue-50 text-blue-700 border-blue-200;
+}
+
+.stage-contacted {
+  @apply bg-amber-50 text-amber-700 border-amber-200;
+}
+
+.stage-followup {
+  @apply bg-purple-50 text-purple-700 border-purple-200;
+}
+
+.stage-proposal {
+  @apply bg-green-50 text-green-700 border-green-200;
+}
+
+.stage-sold {
+  @apply bg-teal-50 text-teal-700 border-teal-200;
+}
+
+.stage-progress {
+  @apply bg-red-50 text-red-700 border-red-200;
+}
+
+.stage-completed {
+  @apply bg-emerald-50 text-emerald-700 border-emerald-200;
+}
+
 /* Custom glow effects */
 .glow-accent {
-  box-shadow: 0 0 20px hsl(var(--accent) / 0.3);
+  box-shadow: 0 0 0 3px hsl(var(--accent) / 0.1);
 }
 
 .glow-primary {
-  box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
 /* Pipeline stage animations */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px hsl(var(--accent) / 0.3);
+    box-shadow: 0 0 0 3px hsl(var(--accent) / 0.1);
   }
   50% {
-    box-shadow: 0 0 30px hsl(var(--accent) / 0.5);
+    box-shadow: 0 0 0 3px hsl(var(--accent) / 0.2);
   }
 }
 
