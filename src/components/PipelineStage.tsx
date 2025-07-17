@@ -20,16 +20,6 @@ const stageIcons = {
   'Completed': Trophy
 };
 
-const stageColors = {
-  'New Lead': 'border-gray-500 text-gray-400',
-  'Contacted': 'border-yellow-500 text-yellow-400',
-  'Follow-Up': 'border-orange-500 text-orange-400',
-  'Proposal Sent': 'border-blue-500 text-blue-400',
-  'Sold': 'border-green-500 text-green-400',
-  'In Progress': 'border-purple-500 text-purple-400',
-  'Completed': 'border-emerald-500 text-emerald-400'
-};
-
 export const PipelineStage: React.FC<PipelineStageProps> = ({
   stage,
   index,
@@ -41,30 +31,34 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
   const isActive = index === currentIndex;
   const isCompleted = index < currentIndex;
   
-  let stageClass = 'border-gray-600 text-gray-500';
+  let stageClass = 'border-2 border-gray-300 bg-white text-gray-400';
+  let textClass = 'text-gray-500';
   
   if (isCompleted) {
-    stageClass = 'border-green-500 text-green-400 bg-green-500/10';
+    stageClass = 'border-2 border-accent bg-accent text-white';
+    textClass = 'text-accent font-medium';
   } else if (isActive) {
-    stageClass = 'border-primary text-primary bg-primary/10 glow-primary';
+    stageClass = 'border-2 border-primary bg-primary text-white shadow-lg';
+    textClass = 'text-primary font-semibold';
   } else if (isNextStage) {
-    stageClass = 'border-green-400 text-green-400 glow-green animate-pulse-glow cursor-pointer hover:bg-green-500/20';
+    stageClass = 'border-2 border-accent bg-accent/5 text-accent glow-accent animate-pulse-glow cursor-pointer hover:bg-accent/10';
+    textClass = 'text-accent font-medium';
   }
 
   return (
-    <div className="flex flex-col items-center relative">
+    <div className="flex flex-col items-center relative flex-1 min-w-0">
       <div
         className={`
-          w-16 h-16 rounded-full border-2 flex items-center justify-center
+          w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center
           transition-all duration-300 ${stageClass}
         `}
         onClick={onClick}
       >
-        <Icon className="w-6 h-6" />
+        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
       </div>
       
-      <div className="mt-2 text-center">
-        <p className={`text-xs font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-400' : isNextStage ? 'text-green-400' : 'text-gray-500'}`}>
+      <div className="mt-2 text-center px-1">
+        <p className={`text-xs sm:text-sm font-medium ${textClass} leading-tight`}>
           {stage}
         </p>
       </div>
@@ -72,9 +66,9 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
       {index < 6 && (
         <div 
           className={`
-            absolute top-8 left-16 w-8 h-0.5 
-            ${isCompleted ? 'bg-green-500' : 'bg-gray-600'}
-            transition-colors duration-300
+            absolute top-6 sm:top-7 left-6 sm:left-7 right-0 h-0.5 
+            ${isCompleted ? 'bg-accent' : 'bg-gray-300'}
+            transition-colors duration-300 z-0
           `}
         />
       )}

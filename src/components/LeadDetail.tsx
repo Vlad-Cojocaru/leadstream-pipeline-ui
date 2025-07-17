@@ -45,10 +45,6 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
     try {
       const newStage = stages[newIndex];
       
-      // Simulate webhook call
-      console.log(`Updating lead ${lead.id} to stage: ${newStage}`);
-      
-      // Call the parent's update function
       onStageUpdate(lead.id, newStage, newIndex);
       
       toast({
@@ -71,98 +67,110 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
   const canMoveToNext = lead.stageIndex < stages.length - 1;
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="text-white hover:text-primary"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-2xl font-bold text-white">Lead Details</h1>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-white border-b border-border px-4 py-4">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onBack}
+            className="text-foreground hover:text-accent hover:bg-accent/10"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/lovable-uploads/21ca0443-32f3-4f4b-a21c-bec7c180b4f7.png" 
+              alt="CurateFlow Logo" 
+              className="w-6 h-6"
+            />
+            <h1 className="text-xl font-brand text-foreground">Lead Details</h1>
+          </div>
+        </div>
       </div>
 
-      {/* Lead Info Card */}
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center justify-between">
-            {lead.name}
-            <Badge className="bg-primary text-white">
-              {lead.currentStage}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Phone className="w-4 h-4" />
-              <span>{lead.phone}</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Mail className="w-4 h-4" />
-              <span>{lead.email}</span>
-            </div>
-          </div>
-          
-          {lead.offerType && (
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-blue-400" />
-              <span className="text-blue-400">{lead.offerType}</span>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Pipeline Visualization */}
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="text-white">Lead Pipeline</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center mb-8 overflow-x-auto pb-4">
-            {stages.map((stage, index) => (
-              <PipelineStage
-                key={stage}
-                stage={stage}
-                index={index}
-                currentIndex={lead.stageIndex}
-                isNextStage={index === nextStageIndex && canMoveToNext}
-                onClick={() => index === nextStageIndex && canMoveToNext ? handleStageUpdate(index) : undefined}
-              />
-            ))}
-          </div>
-
-          {/* Action Button */}
-          {canMoveToNext && (
-            <div className="text-center">
-              <Button
-                onClick={() => handleStageUpdate(nextStageIndex)}
-                disabled={isUpdating}
-                className="bg-green-500 hover:bg-green-600 text-white glow-green"
-              >
-                {isUpdating ? (
-                  "Updating..."
-                ) : (
-                  <>
-                    Move to {stages[nextStageIndex]}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-
-          {lead.stageIndex === stages.length - 1 && (
-            <div className="text-center">
-              <Badge className="bg-emerald-500 text-white text-lg py-2 px-4">
-                🎉 Lead Completed!
+      <div className="p-4 space-y-6">
+        {/* Lead Info Card */}
+        <Card className="bg-white border border-border shadow-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-foreground flex items-center justify-between text-lg">
+              {lead.name}
+              <Badge className="bg-primary text-white border-primary">
+                {lead.currentStage}
               </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <Phone className="w-4 h-4" />
+                <span className="text-sm">{lead.phone}</span>
+              </div>
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <Mail className="w-4 h-4" />
+                <span className="text-sm">{lead.email}</span>
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            
+            {lead.offerType && (
+              <div className="flex items-center gap-3 pt-2 border-t border-border">
+                <FileText className="w-4 h-4 text-primary" />
+                <span className="text-sm text-primary font-medium">{lead.offerType}</span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Pipeline Visualization */}
+        <Card className="bg-white border border-border shadow-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-foreground text-lg">Lead Pipeline</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-start mb-8 overflow-x-auto pb-4 gap-2 relative">
+              {stages.map((stage, index) => (
+                <PipelineStage
+                  key={stage}
+                  stage={stage}
+                  index={index}
+                  currentIndex={lead.stageIndex}
+                  isNextStage={index === nextStageIndex && canMoveToNext}
+                  onClick={() => index === nextStageIndex && canMoveToNext ? handleStageUpdate(index) : undefined}
+                />
+              ))}
+            </div>
+
+            {/* Action Button */}
+            {canMoveToNext && (
+              <div className="text-center">
+                <Button
+                  onClick={() => handleStageUpdate(nextStageIndex)}
+                  disabled={isUpdating}
+                  className="bg-accent hover:bg-accent/90 text-white border-accent glow-accent font-medium px-6 py-2"
+                >
+                  {isUpdating ? (
+                    "Updating..."
+                  ) : (
+                    <>
+                      Move to {stages[nextStageIndex]}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {lead.stageIndex === stages.length - 1 && (
+              <div className="text-center">
+                <Badge className="bg-emerald-500 text-white text-base py-2 px-4 border-emerald-500">
+                  🎉 Lead Completed!
+                </Badge>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
