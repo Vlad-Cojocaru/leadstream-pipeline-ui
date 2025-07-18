@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import BottomNavigation from "./components/BottomNavigation";
 import { useAuth } from "./hooks/useAuth";
 import React from "react";
+import { LeadsProvider } from './context/LeadsContext';
 
 const queryClient = new QueryClient();
 
@@ -40,29 +41,31 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/"
-              element={
-                <RequireAuth>
-                  <Index />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/funnel"
-              element={
-                <RequireAuth>
-                  <FunnelPage />
-                </RequireAuth>
-              }
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <LeadsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/"
+                element={
+                  <RequireAuth>
+                    <Index />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/funnel"
+                element={
+                  <RequireAuth>
+                    <FunnelPage />
+                  </RequireAuth>
+                }
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </LeadsProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>

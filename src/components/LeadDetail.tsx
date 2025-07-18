@@ -63,7 +63,7 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
   const canMoveToNext = lead.stageIndex < stages.length - 1;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#16161d]">
+    <div className="min-h-screen bg-white dark:bg-[#16161d] pb-16">
       {/* Header */}
       <div className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 px-4 py-4 shadow-sm">
         <div className="flex items-center gap-4">

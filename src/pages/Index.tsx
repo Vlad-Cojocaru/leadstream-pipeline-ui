@@ -9,36 +9,30 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'react-router-dom';
 import { Moon, Sun } from 'lucide-react';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
+import { useLeads } from '@/context/LeadsContext';
 
 const Index = () => {
-  const [leads, setLeads] = useState<LeadData[]>([]);
   const [selectedLead, setSelectedLead] = useState<LeadData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { leads, setLeads, isLoading, setIsLoading } = useLeads();
   const { toast } = useToast();
   const { clientSlug, loading: authLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    if (clientSlug && !authLoading) {
-      loadLeads();
-    }
-  }, [clientSlug, authLoading]);
-
-  const loadLeads = async () => {
-    try {
+    if (clientSlug && !authLoading && leads.length === 0) {
       setIsLoading(true);
-      const fetchedLeads = await leadApiService.fetchLeads(clientSlug);
-      setLeads(fetchedLeads);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load leads. Please refresh the page.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      leadApiService.fetchLeads(clientSlug)
+        .then(fetchedLeads => setLeads(fetchedLeads))
+        .catch(() => {
+          toast({
+            title: "Error",
+            description: "Failed to load leads. Please refresh the page.",
+            variant: "destructive",
+          });
+        })
+        .finally(() => setIsLoading(false));
     }
-  };
+  }, [clientSlug, authLoading, leads.length, setLeads, setIsLoading, toast]);
 
   const handleLeadSelect = (lead: LeadData) => {
     setSelectedLead(lead);
@@ -63,7 +57,7 @@ const Index = () => {
       const sheetsSuccess = await leadApiService.updateLeadStage(leadId, newStage, newIndex, clientSlug);
 
       if (webhookSuccess || sheetsSuccess) {
-        // Update local state
+        // Update context state
         setLeads(prevLeads =>
           prevLeads.map(lead =>
             lead.id === leadId
