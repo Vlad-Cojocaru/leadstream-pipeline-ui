@@ -118,36 +118,67 @@ const FunnelPage = () => {
               const colorClass = stageColors[stage as keyof typeof stageColors];
               
               return (
-                <div key={stage} className="flex items-center gap-4">
-                  <div className="w-32 text-right shrink-0">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {stage}
-                    </span>
-                  </div>
-                  
-                  <div className="w-80 relative">
-                    <div className="h-12 bg-gray-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
-                      <div 
-                        className={`h-full ${colorClass} transition-all duration-500 flex items-center justify-between px-4 rounded-lg shadow-sm`}
-                        style={{ width: `${width}%` }}
-                      >
-                        <div className="flex items-center gap-2 text-white">
-                          <Icon className="w-4 h-4" />
-                          <span className="font-semibold text-white drop-shadow-sm">{count}</span>
+                <div key={stage} className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
+                  {/* Mobile Layout */}
+                  <div className="md:hidden w-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-6 h-6 ${colorClass} rounded-full flex items-center justify-center`}>
+                          <Icon className="w-3 h-3 text-white" />
                         </div>
-                        {count > 0 && (
-                          <span className="text-white text-sm font-semibold drop-shadow-sm">
-                            {((count / getTotalLeads()) * 100).toFixed(1)}%
-                          </span>
-                        )}
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {stage}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-[#16161d] dark:text-white">
+                          {count}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          ({getTotalLeads() > 0 ? `${((count / getTotalLeads()) * 100).toFixed(1)}%` : '0%'})
+                        </span>
                       </div>
                     </div>
+                    <div className="h-6 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${colorClass} transition-all duration-500 rounded-full`}
+                        style={{ width: `${width}%` }}
+                      />
+                    </div>
                   </div>
-                  
-                  <div className="w-16 text-left shrink-0">
-                    <span className="text-lg font-bold text-[#16161d] dark:text-white">
-                      {count}
-                    </span>
+
+                  {/* Desktop Layout */}
+                  <div className="hidden md:flex items-center gap-4 w-full">
+                    <div className="w-36 text-right shrink-0">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {stage}
+                      </span>
+                    </div>
+                    
+                    <div className="w-96 lg:w-[500px] relative">
+                      <div className="h-12 bg-gray-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
+                        <div 
+                          className={`h-full ${colorClass} transition-all duration-500 flex items-center justify-between px-4 rounded-lg shadow-sm`}
+                          style={{ width: `${width}%` }}
+                        >
+                          <div className="flex items-center gap-2 text-white">
+                            <Icon className="w-4 h-4" />
+                            <span className="font-semibold text-white drop-shadow-sm">{count}</span>
+                          </div>
+                          {count > 0 && (
+                            <span className="text-white text-sm font-semibold drop-shadow-sm">
+                              {((count / getTotalLeads()) * 100).toFixed(1)}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="w-16 text-left shrink-0">
+                      <span className="text-lg font-bold text-[#16161d] dark:text-white">
+                        {count}
+                      </span>
+                    </div>
                   </div>
                 </div>
               );
