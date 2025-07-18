@@ -119,24 +119,24 @@ const FunnelPage = () => {
               
               return (
                 <div key={stage} className="flex items-center gap-4">
-                  <div className="w-24 text-right">
+                  <div className="w-32 text-right shrink-0">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {stage}
                     </span>
                   </div>
                   
-                  <div className="flex-1 relative">
+                  <div className="w-80 relative">
                     <div className="h-12 bg-gray-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
                       <div 
-                        className={`h-full ${colorClass} transition-all duration-500 flex items-center justify-between px-4 rounded-lg`}
+                        className={`h-full ${colorClass} transition-all duration-500 flex items-center justify-between px-4 rounded-lg shadow-sm`}
                         style={{ width: `${width}%` }}
                       >
                         <div className="flex items-center gap-2 text-white">
                           <Icon className="w-4 h-4" />
-                          <span className="font-medium">{count}</span>
+                          <span className="font-semibold text-white drop-shadow-sm">{count}</span>
                         </div>
                         {count > 0 && (
-                          <span className="text-white text-sm font-medium">
+                          <span className="text-white text-sm font-semibold drop-shadow-sm">
                             {((count / getTotalLeads()) * 100).toFixed(1)}%
                           </span>
                         )}
@@ -144,7 +144,7 @@ const FunnelPage = () => {
                     </div>
                   </div>
                   
-                  <div className="w-16 text-left">
+                  <div className="w-16 text-left shrink-0">
                     <span className="text-lg font-bold text-[#16161d] dark:text-white">
                       {count}
                     </span>
