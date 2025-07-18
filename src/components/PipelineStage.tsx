@@ -51,11 +51,17 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
     lineClass = 'bg-[#0f7969]';
   } else if (isActive) {
     stageClass = `border-2 ${stageColors[stage as keyof typeof stageColors]} shadow-md`;
-    textClass = 'text-[#16161d] font-semibold';
+    textClass = 'text-black dark:text-white font-semibold';
     lineClass = 'bg-[#0f7969]';
   } else if (isNextStage) {
     stageClass = 'border-2 border-[#0f7969] bg-[#0f7969]/5 text-[#0f7969] cursor-pointer hover:bg-[#0f7969]/10';
     textClass = 'text-[#0f7969] font-medium';
+  } else if (index > currentIndex) {
+    // Pending
+    stageClass = 'border-2 border-gray-300 bg-gray-200 text-gray-500';
+    if (typeof window !== 'undefined' && document.documentElement.classList.contains('dark')) {
+      stageClass = 'border-2 border-zinc-700 bg-zinc-800 text-gray-500';
+    }
   }
 
   return (
@@ -83,12 +89,8 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
       
       {/* Vertical Line */}
       {index < 6 && (
-        <div 
-          className={`
-            absolute top-10 left-5 w-0.5 h-8
-            ${lineClass}
-            transition-colors duration-300
-          `}
+        <div
+          className={`absolute top-10 left-5 w-0.5 h-6 ${lineClass} transition-colors duration-300`}
         />
       )}
     </div>

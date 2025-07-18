@@ -91,26 +91,7 @@ export class WebhookClient {
     }
   }
 
-  async testWebhook(url: string): Promise<boolean> {
-    try {
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'no-cors',
-        body: JSON.stringify({
-          test: true,
-          timestamp: new Date().toISOString(),
-          source: 'Lead Stream Pro'
-        }),
-      });
-      return true;
-    } catch (error) {
-      console.error('Webhook test failed:', error);
-      return false;
-    }
-  }
+  // Removed testWebhook method as part of webhook testing cleanup
 }
 
 export const webhookClient = WebhookClient.getInstance();

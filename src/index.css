@@ -59,6 +59,14 @@
   }
 }
 
+html, body {
+  background-color: #fff;
+}
+
+html.dark, body.dark {
+  background-color: #16161d;
+}
+
 /* Pipeline stage specific styles */
 .stage-new {
   @apply bg-blue-50 text-blue-700 border-blue-200;
