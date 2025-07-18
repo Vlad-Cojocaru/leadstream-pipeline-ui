@@ -4,8 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Index, { ThemeProvider } from "./pages/Index";
+import FunnelPage from "./pages/FunnelPage";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
+import BottomNavigation from "./components/BottomNavigation";
 import { useAuth } from "./hooks/useAuth";
 import React from "react";
 
@@ -24,7 +26,12 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   if (!isLoggedIn) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  return children;
+  return (
+    <div className="relative">
+      {children}
+      <BottomNavigation />
+    </div>
+  );
 }
 
 const App = () => (
@@ -41,6 +48,14 @@ const App = () => (
               element={
                 <RequireAuth>
                   <Index />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/funnel"
+              element={
+                <RequireAuth>
+                  <FunnelPage />
                 </RequireAuth>
               }
             />
