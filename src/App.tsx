@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 // Set the base API URL from environment variable
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8090';
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 // For Railway deployment, set VITE_API_BASE_URL to your Railway backend URL in the Railway dashboard
 
 if (apiBaseUrl) {
