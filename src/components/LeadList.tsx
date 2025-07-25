@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { stagesService, Stage } from '@/services/stagesService';
 
 interface Lead {
   id: string;
@@ -18,8 +19,7 @@ interface Lead {
   phone: string;
   email: string;
   offerType: string;
-  currentStage: string;
-  stageIndex: number;
+  currentStage: number; // stageid
 }
 
 interface LeadListProps {
@@ -29,41 +29,51 @@ interface LeadListProps {
   headerActions?: React.ReactNode;
 }
 
-const stages = [
-  'New Lead',
-  'Contacted', 
-  'Follow-Up',
-  'Proposal Sent',
-  'Sold',
-  'In Progress',
-  'Completed'
-];
-
-export const stageStyles = {
-  'New Lead': 'bg-blue-50 dark:bg-blue-400/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-400/40',
-  'Contacted': 'bg-[#0f7969]/10 dark:bg-[#0f7969]/30 text-[#0f7969] dark:text-[#0f7969] border-[#0f7969] dark:border-[#0f7969]/40',
-  'Follow-Up': 'bg-purple-50 dark:bg-purple-400/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-400/40',
-  'Proposal Sent': 'bg-green-50 dark:bg-green-400/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-400/40',
-  'Sold': 'bg-teal-50 dark:bg-teal-400/20 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-400/40',
-  'In Progress': 'bg-red-50 dark:bg-red-400/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-400/40',
-  'Completed': 'bg-emerald-50 dark:bg-emerald-400/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-400/40'
-};
-
 export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selectedLead, headerActions }) => {
-  const [selectedStage, setSelectedStage] = useState<string>('all');
+  const [selectedStage, setSelectedStage] = useState<number | 'all'>('all');
+  const [stages, setStages] = useState<Stage[]>([]);
+  const [isStagesLoading, setIsStagesLoading] = useState(true);
+
+  useEffect(() => {
+    setIsStagesLoading(true);
+    stagesService.fetchStages().then((fetchedStages) => {
+      setStages(fetchedStages);
+      setIsStagesLoading(false);
+    });
+  }, []);
+
+  if (isStagesLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-gray-500 text-lg">Loading stages...</div>
+      </div>
+    );
+  }
 
   const filteredLeads = selectedStage === 'all' 
     ? leads 
     : leads.filter(lead => lead.currentStage === selectedStage);
 
-  const getStageCount = (stage: string) => {
-    return leads.filter(lead => lead.currentStage === stage).length;
+  const getStageCount = (stageId: number) => {
+    return leads.filter(lead => lead.currentStage === stageId).length;
+  };
+
+  const getStageName = (stageId: number) => stages.find(s => s.idstage === stageId)?.name || '';
+
+  const stageColorMap: { [id: number]: string } = {
+    1: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/30 dark:text-blue-300 dark:border-blue-500',
+    2: 'bg-[#0f7969]/10 text-[#0f7969] border-[#0f7969] dark:bg-yellow-500/30 dark:text-yellow-300 dark:border-yellow-500',
+    3: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/30 dark:text-purple-300 dark:border-purple-500',
+    4: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-500/30 dark:text-green-300 dark:border-green-500',
+    5: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-500/30 dark:text-teal-300 dark:border-teal-500',
+    6: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/30 dark:text-red-300 dark:border-red-500',
+    7: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/30 dark:text-emerald-300 dark:border-emerald-500'
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#16161d]">
+    <div className="min-h-screen bg-white dark:bg-[#16161d] pb-16">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 px-4 py-6 shadow-sm">
+      <div className="sticky top-0 z-30 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 px-4 py-6 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <img 
@@ -80,7 +90,7 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
         <div className="mt-4 flex items-center justify-between">
           <p className="text-gray-600 dark:text-gray-300">Manage your pipeline efficiently</p>
           <Badge variant="outline" className="border-[#0f7969] text-[#0f7969] bg-[#0f7969]/10 dark:bg-[#0f7969]/20">
-            {filteredLeads.length} {selectedStage === 'all' ? 'Total' : selectedStage} Leads
+            {filteredLeads.length} {selectedStage === 'all' ? 'Total' : getStageName(selectedStage as number)} Leads
           </Badge>
         </div>
       </div>
@@ -89,15 +99,15 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
       <div className="p-4 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700">
         <div className="flex items-center gap-3">
           <Filter className="w-4 h-4 text-gray-500" />
-          <Select value={selectedStage} onValueChange={setSelectedStage}>
+          <Select value={selectedStage === 'all' ? 'all' : String(selectedStage)} onValueChange={val => setSelectedStage(val === 'all' ? 'all' : Number(val))}>
             <SelectTrigger className="w-full max-w-xs bg-white dark:bg-zinc-800 border-[#0f7969] focus-visible:outline-none focus:border-[#0f7969] dark:text-white dark:placeholder:text-gray-500">
               <SelectValue placeholder="Filter by stage" />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-zinc-800 dark:text-white">
               <SelectItem value="all">All Stages ({leads.length})</SelectItem>
               {stages.map((stage) => (
-                <SelectItem key={stage} value={stage}>
-                  {stage} ({getStageCount(stage)})
+                <SelectItem key={stage.idstage} value={String(stage.idstage)}>
+                  {stage.name} ({getStageCount(stage.idstage)})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -110,7 +120,7 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
         {filteredLeads.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-500">
-              {selectedStage === 'all' ? 'No leads found' : `No leads in ${selectedStage} stage`}
+              {selectedStage === 'all' ? 'No leads found' : `No leads in ${getStageName(selectedStage as number)} stage`}
             </p>
           </div>
         ) : (
@@ -128,9 +138,9 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
                         {lead.name}
                       </h3>
                       <Badge 
-                        className={`${stageStyles[lead.currentStage as keyof typeof stageStyles]} text-xs border font-medium shrink-0 ${selectedStage === lead.currentStage ? 'glow-primary' : ''}`}
+                        className={`px-3 py-1 rounded-full font-medium text-xs border ${stageColorMap[lead.currentStage]}`}
                       >
-                        {lead.currentStage}
+                        {getStageName(lead.currentStage)}
                       </Badge>
                     </div>
                     

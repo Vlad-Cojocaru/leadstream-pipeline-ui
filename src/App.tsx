@@ -1,74 +1,101 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import Index, { ThemeProvider } from "./pages/Index";
-import FunnelPage from "./pages/FunnelPage";
-import NotFound from "./pages/NotFound";
-import LoginPage from "./pages/LoginPage";
-import BottomNavigation from "./components/BottomNavigation";
-import { useAuth } from "./hooks/useAuth";
-import React from "react";
-import { LeadsProvider } from './context/LeadsContext';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from '@/components/ui/toaster';
+import LoginPage from '@/pages/LoginPage';
+import Index from '@/pages/Index';
+import FunnelPage from '@/pages/FunnelPage';
+import NotFound from '@/pages/NotFound';
+import { ThemeProvider } from '@/theme/ThemeProvider';
+import { LeadsProvider } from '@/context/LeadsContext';
+import { leadApiService } from '@/services/leadApiService';
+import { stagesService } from '@/services/stagesService';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
-const queryClient = new QueryClient();
+// Set the base API URL from environment variable
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8090';
+// For Railway deployment, set VITE_API_BASE_URL to your Railway backend URL in the Railway dashboard
 
-function RequireAuth({ children }: { children: JSX.Element }) {
+if (apiBaseUrl) {
+  leadApiService.setBaseApiUrl(apiBaseUrl);
+  stagesService.setBaseApiUrl(apiBaseUrl);
+  console.log('[App] API Base URL set to:', apiBaseUrl);
+} else {
+  console.warn('[App] No API Base URL configured');
+}
+
+// Protected Route Component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loading } = useAuth();
-  const location = useLocation();
+  
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg font-semibold">Loading...</div>
+      <div className="min-h-screen bg-white dark:bg-[#16161d] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-[#0f7969] dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#0f7969] dark:text-white">Loading...</p>
+        </div>
       </div>
     );
   }
+  
   if (!isLoggedIn) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
-  return (
-    <div className="relative">
-      {children}
-      <BottomNavigation />
-    </div>
-  );
+  
+  return <>{children}</>;
 }
 
-const App = () => (
-  <ThemeProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+function App() {
+  const { isLoggedIn, loading, logout } = useAuth();
+  const { toast } = useToast();
+
+  // Debug log to confirm LeadsProvider is only mounted once
+  useEffect(() => {
+    console.log('[DEBUG] LeadsProvider mounted');
+  }, []);
+
+  // Periodic session logout for safety (every 30 minutes)
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const interval = setInterval(() => {
+      logout();
+      toast({
+        title: 'Session expired',
+        description: 'For your security, please log in again.',
+        style: { background: '#2563eb', color: '#fff', border: '2px solid #2563eb' },
+      });
+    }, 30 * 60 * 1000); // 30 minutes
+    return () => clearInterval(interval);
+  }, [isLoggedIn, logout, toast]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-[#16161d] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-[#0f7969] dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#0f7969] dark:text-white">Checking session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ThemeProvider>
+      <LeadsProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<Navigate to="/leadstream" replace />} />
+            <Route path="/leadstream" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/funnel" element={<ProtectedRoute><FunnelPage /></ProtectedRoute>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
         <Toaster />
-        <Sonner />
-        <LeadsProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                path="/"
-                element={
-                  <RequireAuth>
-                    <Index />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/funnel"
-                element={
-                  <RequireAuth>
-                    <FunnelPage />
-                  </RequireAuth>
-                }
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </LeadsProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
-);
+      </LeadsProvider>
+    </ThemeProvider>
+  );
+}
 
 export default App;

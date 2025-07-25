@@ -1,10 +1,10 @@
 import { useCallback, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-const LOCAL_STORAGE_KEY = 'clientSlug';
+const LOCAL_STORAGE_KEY = 'clientName';
 
 export function useAuth() {
-  const [clientSlug, setClientSlug] = useState<string | null>(() => {
+  const [clientName, setClientName] = useState<string | null>(() => {
     return localStorage.getItem(LOCAL_STORAGE_KEY);
   });
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -12,7 +12,7 @@ export function useAuth() {
   });
   const [loading, setLoading] = useState(false);
 
-  // On mount, check Supabase session and sync clientSlug if needed
+  // On mount, check Supabase session and sync clientName if needed
   useEffect(() => {
     let isMounted = true;
     const getSession = async () => {
@@ -20,30 +20,30 @@ export function useAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!isMounted) return;
       if (session) {
-        // Try to get clientSlug from user_metadata
+        // Try to get clientName from user_metadata
         const user = session.user;
-        let slug = user.user_metadata?.clientSlug;
-        if (!slug) {
+        let name = user.user_metadata?.clientName;
+        if (!name) {
           // Optionally, fetch from a profile table if not in metadata
           // const { data: profile, error } = await supabase
           //   .from('profiles')
-          //   .select('clientSlug')
+          //   .select('clientName')
           //   .eq('id', user.id)
           //   .single();
-          // slug = profile?.clientSlug;
+          // name = profile?.clientName;
         }
-        if (slug) {
-          localStorage.setItem(LOCAL_STORAGE_KEY, slug);
-          setClientSlug(slug);
+        if (name) {
+          localStorage.setItem(LOCAL_STORAGE_KEY, name);
+          setClientName(name);
           setIsLoggedIn(true);
         } else {
           localStorage.removeItem(LOCAL_STORAGE_KEY);
-          setClientSlug(null);
+          setClientName(null);
           setIsLoggedIn(false);
         }
       } else {
         localStorage.removeItem(LOCAL_STORAGE_KEY);
-        setClientSlug(null);
+        setClientName(null);
         setIsLoggedIn(false);
       }
       setLoading(false);
@@ -70,38 +70,38 @@ export function useAuth() {
     if (error || !data.session) {
       return { success: false, message: error?.message || 'Login failed.' };
     }
-    // Get clientSlug from user_metadata
+    // Get clientName from user_metadata
     const user = data.session.user;
     console.log("Logged-in user metadata:", user.user_metadata);
-    let slug = user.user_metadata?.clientSlug;
-    if (!slug) {
+    let name = user.user_metadata?.clientName;
+    if (!name) {
       // Optionally, fetch from a profile table if not in metadata
       // const { data: profile, error: profileError } = await supabase
       //   .from('profiles')
-      //   .select('clientSlug')
+      //   .select('clientName')
       //   .eq('id', user.id)
       //   .single();
-      // slug = profile?.clientSlug;
+      // name = profile?.clientName;
     }
-    if (slug) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, slug);
-      setClientSlug(slug);
+    if (name) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, name);
+      setClientName(name);
       setIsLoggedIn(true);
       return { success: true };
     } else {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
-      setClientSlug(null);
+      setClientName(null);
       setIsLoggedIn(false);
-      return { success: false, message: 'No clientSlug found for this user.' };
+      return { success: false, message: 'No clientName found for this user.' };
     }
   }, []);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-    setClientSlug(null);
+    setClientName(null);
     setIsLoggedIn(false);
   }, []);
 
-  return { isLoggedIn, clientSlug, login, logout, loading };
+  return { isLoggedIn, clientName, login, logout, loading };
 } 

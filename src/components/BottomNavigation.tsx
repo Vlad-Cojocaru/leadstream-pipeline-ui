@@ -1,17 +1,19 @@
 import React from 'react';
 import { Home, BarChart3 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLeads } from '@/context/LeadsContext';
 
 const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setRefreshFlag } = useLeads();
 
   const navItems = [
     {
       icon: Home,
       label: 'Home',
-      path: '/',
-      isActive: location.pathname === '/'
+      path: '/leadstream',
+      isActive: location.pathname === '/leadstream'
     },
     {
       icon: BarChart3,
@@ -20,6 +22,15 @@ const BottomNavigation = () => {
       isActive: location.pathname === '/funnel'
     }
   ];
+
+  const handleHomeClick = () => {
+    if (location.pathname === '/leadstream') {
+      console.log('[DEBUG] Home clicked while on Home, setting refreshFlag');
+      setRefreshFlag(true);
+    } else {
+      navigate('/leadstream');
+    }
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-700 px-4 py-2 z-50">
