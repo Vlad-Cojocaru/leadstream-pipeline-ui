@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { stagesService, Stage } from '@/services/stagesService';
+import { getStageName } from '@/utils/stageUtils';
 
 interface Lead {
   id: string;
@@ -42,13 +43,14 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
     });
   }, []);
 
-  if (isStagesLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500 text-lg">Loading stages...</div>
-      </div>
-    );
-  }
+  // Remove the full-screen loading state and let the component render with fallback names
+  // if (isStagesLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="text-gray-500 text-lg">Loading stages...</div>
+  //     </div>
+  //   );
+  // }
 
   const filteredLeads = selectedStage === 'all' 
     ? leads 
@@ -57,8 +59,6 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
   const getStageCount = (stageId: number) => {
     return leads.filter(lead => lead.currentStage === stageId).length;
   };
-
-  const getStageName = (stageId: number) => stages.find(s => s.idstage === stageId)?.name || '';
 
   const stageColorMap: { [id: number]: string } = {
     1: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/30 dark:text-blue-300 dark:border-blue-500',
@@ -90,7 +90,7 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
         <div className="mt-4 flex items-center justify-between">
           <p className="text-gray-600 dark:text-gray-300">Manage your pipeline efficiently</p>
           <Badge variant="outline" className="border-[#0f7969] text-[#0f7969] bg-[#0f7969]/10 dark:bg-[#0f7969]/20">
-            {filteredLeads.length} {selectedStage === 'all' ? 'Total' : getStageName(selectedStage as number)} Leads
+            {filteredLeads.length} {selectedStage === 'all' ? 'Total' : getStageName(selectedStage as number, stages)} Leads
           </Badge>
         </div>
       </div>
@@ -101,15 +101,21 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
           <Filter className="w-4 h-4 text-gray-500" />
           <Select value={selectedStage === 'all' ? 'all' : String(selectedStage)} onValueChange={val => setSelectedStage(val === 'all' ? 'all' : Number(val))}>
             <SelectTrigger className="w-full max-w-xs bg-white dark:bg-zinc-800 border-[#0f7969] focus-visible:outline-none focus:border-[#0f7969] dark:text-white dark:placeholder:text-gray-500">
-              <SelectValue placeholder="Filter by stage" />
+              <SelectValue placeholder={isStagesLoading ? "Loading stages..." : "Filter by stage"} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-zinc-800 dark:text-white">
               <SelectItem value="all">All Stages ({leads.length})</SelectItem>
-              {stages.map((stage) => (
-                <SelectItem key={stage.idstage} value={String(stage.idstage)}>
-                  {stage.name} ({getStageCount(stage.idstage)})
+              {isStagesLoading ? (
+                <SelectItem value="loading" disabled>
+                  Loading stages...
                 </SelectItem>
-              ))}
+              ) : (
+                stages.map((stage) => (
+                  <SelectItem key={stage.idstage} value={String(stage.idstage)}>
+                    {stage.name} ({getStageCount(stage.idstage)})
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -120,7 +126,7 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
         {filteredLeads.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-500">
-              {selectedStage === 'all' ? 'No leads found' : `No leads in ${getStageName(selectedStage as number)} stage`}
+              {selectedStage === 'all' ? 'No leads found' : `No leads in ${getStageName(selectedStage as number, stages)} stage`}
             </p>
           </div>
         ) : (
@@ -140,7 +146,7 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
                       <Badge 
                         className={`px-3 py-1 rounded-full font-medium text-xs border ${stageColorMap[lead.currentStage]}`}
                       >
-                        {getStageName(lead.currentStage)}
+                        {getStageName(lead.currentStage, stages)}
                       </Badge>
                     </div>
                     

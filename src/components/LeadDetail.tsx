@@ -8,6 +8,7 @@ import { PipelineStage } from './PipelineStage';
 import { useToast } from '@/hooks/use-toast';
 import { stagesService, Stage } from '@/services/stagesService';
 import { useSwipeable } from 'react-swipeable';
+import { getStageName } from '@/utils/stageUtils';
 
 interface Lead {
   id: string;
@@ -62,8 +63,6 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
     }
   };
 
-  const getStageName = (stageId: number) => stages.find(s => s.idstage === stageId)?.name || '';
-
   const stageColorMap: { [id: number]: string } = {
     1: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/30 dark:text-blue-300 dark:border-blue-500',
     2: 'bg-[#0f7969]/10 text-[#0f7969] border-[#0f7969] dark:bg-yellow-500/30 dark:text-yellow-300 dark:border-yellow-500',
@@ -105,7 +104,7 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
           <CardTitle className="text-[#16161d] dark:text-white flex items-center justify-between text-lg">
             {lead.name}
             <span className={`inline-block px-3 py-1 rounded-full font-medium text-xs border ${stageColorMap[lead.currentStage]}`}>
-              {getStageName(lead.currentStage)}
+              {getStageName(lead.currentStage, stages)}
             </span>
           </CardTitle>
         </CardHeader>

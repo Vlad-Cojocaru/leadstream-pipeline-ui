@@ -11,6 +11,7 @@ import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { useLeads } from '@/context/LeadsContext';
 import BottomNavigation from '@/components/BottomNavigation';
 import { stagesService, Stage } from '@/services/stagesService';
+import { getStageName } from '@/utils/stageUtils';
 
 const Index = () => {
   const [selectedLead, setSelectedLead] = useState<LeadData | null>(null);
@@ -108,7 +109,7 @@ const Index = () => {
         setMutationFlag(true); // Only trigger refetch after mutation
         toast({
           title: "Success",
-          description: `Lead moved to ${stages.find(s => s.idstage === newStageId)?.name || ''}. SMS notification sent!`,
+          description: `Lead moved to ${getStageName(newStageId, stages)}. SMS notification sent!`,
           variant: "success",
         });
       } else {
