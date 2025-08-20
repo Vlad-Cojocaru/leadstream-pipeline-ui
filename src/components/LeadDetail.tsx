@@ -112,11 +112,23 @@ export const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onBack, onStageUpd
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Phone className="w-4 h-4" />
-              <span className="text-sm">{lead.phone}</span>
+              <a
+                href={`tel:${lead.phone}`}
+                className="text-sm text-[#0f7969] hover:underline focus:underline"
+                aria-label={`Call ${lead.phone}`}
+              >
+                {lead.phone}
+              </a>
             </div>
             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Mail className="w-4 h-4" />
-              <span className="text-sm">{lead.email}</span>
+              <a
+                href={`mailto:${lead.email}`}
+                className="text-sm text-[#0f7969] hover:underline focus:underline"
+                aria-label={`Email ${lead.email}`}
+              >
+                {lead.email}
+              </a>
             </div>
           </div>
           {lead.offerType && (

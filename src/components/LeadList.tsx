@@ -153,11 +153,25 @@ export const LeadList: React.FC<LeadListProps> = ({ leads, onLeadSelect, selecte
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                         <Phone className="w-4 h-4 shrink-0" />
-                        <span className="truncate">{lead.phone}</span>
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="truncate text-[#0f7969] hover:underline focus:underline"
+                          aria-label={`Call ${lead.phone}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {lead.phone}
+                        </a>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                         <Mail className="w-4 h-4 shrink-0" />
-                        <span className="truncate">{lead.email}</span>
+                        <a
+                          href={`mailto:${lead.email}`}
+                          className="truncate text-[#0f7969] hover:underline focus:underline"
+                          aria-label={`Email ${lead.email}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {lead.email}
+                        </a>
                       </div>
                     </div>
                     
